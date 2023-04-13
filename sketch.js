@@ -1,29 +1,36 @@
-const streetCount = 15;
-const avenueCount = 12;
-const streetWidth = 4;
-const blockParcelCount = 5;
+let streetCount = 15;
+let avenueCount = 12;
+let streetWidth = 4;
+let blockParcelCount = 5;
 
-const parcelWidth = 3;
-const parcelDepth = 4;
-const res = 5;
+let parcelWidth = 3;
+let parcelDepth = 4;
+let res = 5;
 
-const parcels = [];
-const grid = [];
-const tiles = [];
+let parcels = [];
+let grid = [];
+let tiles = [];
 
 var gridMap; //parcel 
-const D = 3; //influence diameter
-const cellSize = Math.ceil(D * 2);
-const cols =
-  avenueCount * streetWidth +
-  (avenueCount - 1) * blockParcelCount * parcelWidth;
-const rows = streetCount * streetWidth + (streetCount - 1) * 2 * parcelDepth;
+let D = 3; //influence diameter
+let cellSize ;
+let cols ;
+let rows ;
 
 function setup() {
+  let parcels = [];
+  let grid = [];
+  let tiles = [];
+  cellSize = Math.ceil(D * 2);
+  cols =  avenueCount * streetWidth +   (avenueCount - 1) * blockParcelCount * parcelWidth;
+  rows = streetCount * streetWidth + (streetCount - 1) * 2 * parcelDepth;
   createCanvas(cols * res, rows * res);
   background(120);
   openSpace.color = color(120);
+  //remove old buttons if there are any
+
   buttons();
+  inputs();
   
   for (let i = 0; i < cols; i++) {
     grid.push([]);

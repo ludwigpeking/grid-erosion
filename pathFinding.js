@@ -1,17 +1,7 @@
 let routes = [];
 let routesNr = 0;
 
-function generatRandomTraffic() {
-  let start = weightedRandom(parcels, "prosperity").accessPoint;
-  let end = weightedRandom(parcels, "prosperity").accessPoint;
-  fill(255, 0, 0);
-  rect(start.i * res, start.j * res, res, res);
-  rect(end.i * res, end.j * res, res, res);
-  pathFinding(start, end);
-}
-function generatRandomTraffic100() {
-  for(let i = 0 ; i<100; i++)generatRandomTraffic()
-}
+
 function pathFinding(start, end) {
   //reset grid......
   let closeSet = [];
@@ -83,7 +73,7 @@ function pathFinding(start, end) {
   }
   routesNr++;
 
-  // gridMap = creategridMap(parcels, cellSize);
+  gridMap = creategridMap(parcels, cellSize);
   const influencedParcels = findInfluencedParcels(route, gridMap, D, cellSize);
 
   for (let parcel of influencedParcels){

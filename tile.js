@@ -11,6 +11,7 @@ class Tile {
     this.owner = openSpace;
     
     this.wall = false;
+    this.traffic = 0;
 
     this.frontageIndex = 0;
     
