@@ -18,9 +18,9 @@ let cols ;
 let rows ;
 
 function setup() {
-  let parcels = [];
-  let grid = [];
-  let tiles = [];
+  parcels = [];
+  grid = [];
+  tiles = [];
   cellSize = Math.ceil(D * 2);
   cols =  avenueCount * streetWidth +   (avenueCount - 1) * blockParcelCount * parcelWidth;
   rows = streetCount * streetWidth + (streetCount - 1) * 2 * parcelDepth;
@@ -28,6 +28,7 @@ function setup() {
   background(120);
   openSpace.color = color(120);
   //remove old buttons if there are any
+  removeButtonsAndInputsIfThereAre();
 
   buttons();
   inputs();

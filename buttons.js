@@ -3,31 +3,31 @@
 function inputs(){
     input00 = createInput("streetCount");
     input00.position(0, height + 10);
-    input00.size(50, 20);
+    input00.size(80, 20);
     input00.input(updateStreetCount);
     input01 = createInput("avenueCount");
     input01.position(100, height +10);
-    input01.size(50, 20);
+    input01.size(80, 20);
     input01.input(updateAvenueCount);
     input02 = createInput("streetWidth");
     input02.position(200, height +10);
-    input02.size(50, 20);
+    input02.size(80, 20);
     input02.input(updateStreetWidth);
     input03 = createInput("blockParcelCount");
     input03.position(300, height +10);
-    input03.size(50, 20);
+    input03.size(80, 20);
     input03.input(updateBlockParcelCount);
     input04 = createInput("parcelWidth");
     input04.position(400, height +10);
-    input04.size(50, 20);
+    input04.size(80, 20);
     input04.input(updateParcelWidth);
     input05 = createInput("parcelDepth");
     input05.position(500, height +10);
-    input05.size(50, 20);
+    input05.size(80, 20);
     input05.input(updateParcelDepth);
     input06 = createInput("res");
     input06.position(600, height +10);
-    input06.size(50, 20);
+    input06.size(80, 20);
     input06.input(updateRes);
   }
 function updateStreetCount(){
@@ -150,21 +150,22 @@ function redrawTheParcelsProsperity(){
         }
     }
 }
-
+//remove Buttons and inputs if there are. if undifined, do nothing
 function removeButtonsAndInputsIfThereAre(){
-    if(button00)button00.remove();
-    if(button01)button01.remove();
-    if(button02)button02.remove();
-    if(button10)button10.remove();
-    if(button11)button11.remove();
-    if(button12)button12.remove();
-    if(button13)button13.remove();
-    if(button20)button20.remove();
-    if(input00)input00.remove();
-    if(input01)input01.remove();
-    if(input02)input02.remove();
-    if(input03)input03.remove();
-    if(input04)input04.remove();
-    if(input05)input05.remove();
-    if(input06)input06.remove();
+    if(typeof button00 !== "undefined")button00.remove();
+    if(typeof button01 !== "undefined")button01.remove();
+    if(typeof button02 !== "undefined")button02.remove();
+    if(typeof button10 !== "undefined")button10.remove();
+    if(typeof button11 !== "undefined")button11.remove();
+    if(typeof button12 !== "undefined")button12.remove();
+    if(typeof button13 !== "undefined")button13.remove();
+    if(typeof button20 !== "undefined")button20.remove();
+    if(typeof input00 !== "undefined")input00.remove();
+    if(typeof input01 !== "undefined")input01.remove();
+    if(typeof input02 !== "undefined")input02.remove();
+    if(typeof input03 !== "undefined")input03.remove();
+    if(typeof input04 !== "undefined")input04.remove();
+    if(typeof input05 !== "undefined")input05.remove();
+    if(typeof input06 !== "undefined")input06.remove();
+    
 }

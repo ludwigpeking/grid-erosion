@@ -58,6 +58,31 @@ class Parcel {
     noStroke();
     rect(this.accessPoint.i * res, this.accessPoint.j * res, res, res);
   }
+//a parcel claims a vacant tile adjacent to the parcel and of low traffic value smaller than 2. put the tile into the parcel's tiles array, and change the tile's owner to the parcel. draw the tile with the parcel's color. recalculates the parcel's center and access point.
+  claimOneTile() {
+    let vacantTiles = [];
+    for (let tile of this.tiles) {
+      for (let neighbor of tile.neighbors) {
+        if (neighbor.owner == openSpace && neighbor.traffic < 2) {
+          vacantTiles.push(neighbor);
+        }
+      }
+    }
+    if(!vacantTiles.length ==0){
+      let randomTile = vacantTiles[Math.floor(random(vacantTiles.length))];
+      randomTile.owner = this;
+      randomTile.wall = true;
+      this.tiles.push(randomTile);
+
+      for (let tile of this.tiles){
+        checkNeighbors(tile);
+        tile.show();
+      }
+      this.checkCenter();
+      this.checkAccessPoint();
+    }
+}
+  
 }
 
 function layParcels() {

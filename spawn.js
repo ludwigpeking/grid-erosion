@@ -18,7 +18,7 @@ function spawnOneParcel(){
     randomTile.owner.frontageIndex = 0;
     noStroke()
     fill(randomTile.owner.color)
-    rect(randomTile.i *res, randomTile.j *res, res*10, res*10)
+    rect(randomTile.i *res, randomTile.j *res, res*2, res*2)
     console.log("spawned", randomTile.i, randomTile.j);
     parcels.push(randomTile.owner);
 
