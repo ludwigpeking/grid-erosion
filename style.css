@@ -1,7 +1,27 @@
 html, body {
   margin: 0;
   padding: 0;
+
 }
 canvas {
   display: block;
+}
+
+/* button {
+  position: absolute;
+  width: 90px;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+} */
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: inner-spin-button;
+    appearance: inner-spin-button;
+    margin: 0;
+}
+
+label {
+  size: 5px;
 }

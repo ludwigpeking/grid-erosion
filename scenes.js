@@ -11,7 +11,7 @@ const portland = {};
 const scatter ={};
 const erosion = {};
 
-const events = 
+const cityEvents = 
 [
     layout,
     grow,

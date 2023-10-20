@@ -1,25 +1,25 @@
 function destroyRandomParcels() {
-    console.log(parcels);
+    
     const numParcelsToDestroy = Math.floor(parcels.length * 0.2);
     for (let i = 0; i < numParcelsToDestroy; i++) {
       const randomIndex = Math.floor(Math.random() * parcels.length);
       parcels.splice(randomIndex, 1);
     }
     background(120)
-    redrawTheParcelsProsperity()
+    redrawParcels();
     gridMap = creategridMap(parcels, cellSize)
     refreshTileProperty()
 }
 
 function destoryParcelsLowProsper(){
     for (let i = 0; i < parcels.length; i++) {
-        if(parcels[i].prosperity < 3 && 0.5 < Math.random()){
+        if(parcels[i].prosperity  * 0.1 < Math.random()){
             parcels.splice(i, 1);
             //would the splice function change the index of the array and cause the loop to skip the next parcel? correct: no, because the loop will not run again until the next frame
         }
     }
     background(120)
-    redrawTheParcelsProsperity()
+    redrawParcels()
     gridMap = creategridMap(parcels, cellSize)
     refreshTileProperty()
 
@@ -30,7 +30,7 @@ function destoryParcelsHalfProsper(){
         parcels[i].prosperity = parcels[i].prosperity * 0.5;
     }
     background(120)
-    redrawTheParcelsProsperity()
+    redrawParcels()
     refreshTileProperty()
 }
 

@@ -42,7 +42,6 @@ function creategridMap(parcels, cellSize) {
 }
 
 // Find the influenced parcels using the gridMap
-// Find the influenced parcels using the gridMap
 function findInfluencedParcels(route, gridMap, D, cellSize) {
   const influencedParcels = new Set();
   const squaredD = D * D;
@@ -72,5 +71,70 @@ function findInfluencedParcels(route, gridMap, D, cellSize) {
   return Array.from(influencedParcels);
 }
 
+function checkKnightMoveAccessibleNeighbors(tile){
+  for( let u = -2; u <= 2; u++){
+    for( let v = -2; v <= 2; v++){
+      if (isInsideGrid(tile.i+u, tile.j+v)){
 
+        if( Math.abs(u) + Math.abs(v) == 3){
+          const neighbor = grid[tile.i + u][tile.j + v];
+          if(neighbor && neighbor.wall == false){
+            return true;
+          }
+        }
+    }
+  }
+  }
+}
+
+
+
+function getAccessibleNeighbors(position, grid) {
+  const [x, y] = position;
+  const rows = grid.length;
+  const columns = grid[0].length;
+  const knightMoveNeighbors = [];
+
+  // Knight move offsets
+  const knightMoves = [
+    [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+    [1, -2], [1, 2], [2, -1], [2, 1]
+  ];
+
+  // Diagonal move offsets
+  const diagonalMoves = [
+    [-1, -1], [-1, 1],
+    [1, -1], [1, 1]
+  ];
+
+  function isInsideGrid(x, y) {
+    return x >= 0 && x < rows && y >= 0 && y < columns;
+  }
+
+  function isObstacle(x, y) {
+    return grid[x][y].wall === true;
+  }
+
+  // Check knight moves
+  // for (const [dx, dy] of knightMoves) {
+  //   const newX = x + dx;
+  //   const newY = y + dy;
+
+  //   if (isInsideGrid(newX, newY) && !isObstacle(newX, newY)) {
+  //     neighbors.push([newX, newY]);
+  //   }
+  // }
+
+  // Check diagonal moves
+  for (const [dx, dy] of diagonalMoves) {
+    const newX = x + dx;
+    const newY = y + dy;
+
+    if (isInsideGrid(newX, newY) && !isObstacle(newX, newY) && !isObstacle(x, newY) && !isObstacle(newX, y)) {
+      neighbors.push([newX, newY]);
+    }
+  }
+
+  return knightMoveNeighbors;
+}
 

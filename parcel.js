@@ -6,12 +6,12 @@ class Parcel {
     this.tiles = [];
     this.frontageTiles = [];
     this.accessPoint = null;
-    this.i = i
-    this.j = j
+    //in p5js context (i,j)is the top left tile of the parcel
+    this.i = i;
+    this.j = j;
     this.color = color(random(100, 255), random(200, 255), random(200, 255));
 
-    
-    this.prosperity = 1;
+    this.prosperity = 3;
   }
   
   originalClaim(){
@@ -37,12 +37,18 @@ class Parcel {
     this.center = grid[centerI][centerJ];
   }
   
-  showCenter() {
-    fill(0, 0, 255);
-    noStroke();
-    rect(this.center.i * res, this.center.j * res, res, res);
-  }
+  // showCenter() {
+  //   fill(0, 0, 255);
+  //   noStroke();
+  //   rect(this.center.i * res, this.center.j * res, res, res);
+  // }
   
+  checkFrontage() {
+    for (let tile of this.tiles) {
+      checkNeighbors(tile);
+    }
+  }
+
   checkAccessPoint() {
     let nearest = 9999;
     for (let tile of this.frontageTiles) {
@@ -58,13 +64,26 @@ class Parcel {
     noStroke();
     rect(this.accessPoint.i * res, this.accessPoint.j * res, res, res);
   }
+
+  show() {
+    for (let tile of this.tiles) {
+      fill(this.color);
+      noStroke();
+      rect(tile.i * res, tile.j * res, res, res);
+    }
+    this.checkCenter();
+    this.checkFrontage();
+    this.checkAccessPoint();
+  }
+
 //a parcel claims a vacant tile adjacent to the parcel and of low traffic value smaller than 2. put the tile into the parcel's tiles array, and change the tile's owner to the parcel. draw the tile with the parcel's color. recalculates the parcel's center and access point.
   claimOneTile() {
     let vacantTiles = [];
     for (let tile of this.tiles) {
       for (let neighbor of tile.neighbors) {
-        if (neighbor.owner == openSpace && neighbor.traffic < 2) {
+        if (neighbor.owner == openSpace && neighbor.traffic * random() < 1 && (tile.i == neighbor.i || tile.j == neighbor.j)) {
           vacantTiles.push(neighbor);
+          
         }
       }
     }
@@ -72,6 +91,8 @@ class Parcel {
       let randomTile = vacantTiles[Math.floor(random(vacantTiles.length))];
       randomTile.owner = this;
       randomTile.wall = true;
+      fill(0)
+      rect( randomTile.i * res, randomTile.j * res, res, res);
       this.tiles.push(randomTile);
 
       for (let tile of this.tiles){
@@ -118,7 +139,13 @@ class SpawnedParcel extends Parcel {
     this.tiles.push(grid[i][j]);
     grid[i][j].owner = this;
     grid[i][j].wall = true;
+    
   }
 }
 
+function redrawParcels(){
+  for (let parcel of parcels){
+    parcel.show();
+  }
+}
 

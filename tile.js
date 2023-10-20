@@ -9,6 +9,7 @@ class Tile {
     this.streetFront = false;
     this.accessPoint = false;
     this.owner = openSpace;
+    this.onFence = false;
     
     this.wall = false;
     this.traffic = 0;
@@ -39,7 +40,7 @@ class Tile {
     if (this.j > 0) 
       this.neighbors.push(grid[this.i][this.j - 1]);
     
-    if (this.i > 0 && this.j > 0) 
+    if (this.i > 0 && this.j > 0 ) 
       this.neighbors.push(grid[this.i - 1][this.j - 1]);
     
     if (this.i < cols - 1 && this.j > 0) 
@@ -50,7 +51,6 @@ class Tile {
     
     if (this.i < cols - 1 && this.j < rows - 1) 
       this.neighbors.push(grid[this.i + 1][this.j + 1]);
-    
   }
   show() {
     this.color = this.owner.color;
@@ -72,10 +72,8 @@ function checkNeighbors(tile) {
     if (neighbor.owner === openSpace) {
       tile.frontageIndex++;
       tile.streetFront = true;
-      if (
-        tile.owner.frontageTiles &&
-        !tile.owner.frontageTiles.includes(tile)
-      ) {
+      if ( tile.owner.frontageTiles && !tile.owner.frontageTiles.includes(tile))
+      {
         tile.owner.frontageTiles.push(tile);
       }
     }
@@ -89,7 +87,8 @@ function tileReset() {
       grid[i][j].g = 99999;
       grid[i][j].h = 99999;
       grid[i][j].from = null;
-      grid[i][j].addNeighbors();
+      // grid[i][j].addNeighbors();
     }
   }
 }
+
