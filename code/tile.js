@@ -54,7 +54,11 @@ class Tile {
       this.neighbors.push(grid[this.i + 1][this.j + 1]);
   }
   show() {
-    this.color = this.owner.color;
+    if (this.park){
+      this.color = color(120, 255, 180);
+    } else {
+      this.color = this.owner.color;
+    }
     noStroke();
     fill(this.color);
     rect(this.i * res, this.j * res, res, res);

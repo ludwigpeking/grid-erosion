@@ -1,11 +1,10 @@
 
-let needUpdate = false;
 let buttonList = [];
 let inputElements = []; 
 let labelElements = []; 
-
-
 let sceneSelect;
+
+
 const params = [
     {name: 'streetCount', type: 'int'},
     {name: 'avenueCount', type: 'int'},
@@ -13,51 +12,52 @@ const params = [
     {name: 'blockParcelCount', type: 'int'},
     {name: 'parcelWidth', type: 'int'},
     {name: 'parcelDepth', type: 'int'},
-    {name: 'res', type: 'int'}
+    {name: 'res', type: 'int'},
+
 ];
 
 function resetParameters() {
-    streetCount = 9;
-    avenueCount = 5;
-    streetWidth = 4;
-    blockParcelCount = 5;
-    parcelWidth = 3;
-    parcelDepth = 5;
-    res = 5;
-    needUpdate = true; 
+    currentParams = scenes.newYork;
     console.log('Parameters reset to default');
 }
 
 function inputs() {
+    if (sceneSelect) {
+        sceneSelect.remove();
+    }
     inputElements.forEach(input => input.remove());
     labelElements.forEach(label => label.remove());
     inputElements = [];
     labelElements = [];
 
-    const sceneSelect = createSelect();
-    sceneSelect.position(params.length * 100, height + 30); // Adjust position as needed
+    sceneSelect = createSelect();
+    sceneSelect.position(0, height + 5).style('padding', "5px"); // Adjust position as needed
     for (const scene in scenes) {
         sceneSelect.option(scene);
     }
-    sceneSelect.changed(() => changeScene(sceneSelect.value()));
+    sceneSelect.changed(() => {
+        selectedScene = sceneSelect.value();
+        changeScene(selectedScene);
+    });
+    sceneSelect.value(selectedScene);
+    
     inputElements.push(sceneSelect); // To ensure it gets removed and updated like other inputs
 
 
     inputElements = params.map((param, index) => {
         const label = createElement('label', capitalizeFirstLetter(param.name) )
-            .position(index * 100, height + 10)
+            .position(index * 100, height + 40)
             .style('font-size', '12px');
         
         labelElements.push(label);  // Store label elements to update them later
 
         const input = createInput('')
-            .value(getDefaultValue(param.name))
-            .position(index * 100, height + 30)
+            .value(currentParams[param.name])
+            .position(index * 100, height + 60)
             .size(87, 20);
 
         if (param.type === 'int') {
-            input.attribute('type', 'number')
-                .attribute('step', '1');
+            input.attribute('type', 'number').attribute('step', '1');
         }
 
         input.changed(() => {
@@ -70,16 +70,7 @@ function inputs() {
 
 
 function getDefaultValue(paramName) {
-    switch (paramName) {
-        case 'streetCount': return streetCount;
-        case 'avenueCount': return avenueCount;
-        case 'streetWidth': return streetWidth;
-        case 'blockParcelCount': return blockParcelCount;
-        case 'parcelWidth': return parcelWidth;
-        case 'parcelDepth': return parcelDepth;
-        case 'res': return res;
-        default: return '';
-    }
+    return currentParams[paramName] || '';
 }
 
 function createNumberInput(paramName) {
@@ -94,23 +85,14 @@ function updateParameter(paramName, value, type) {
     if (type === 'int') {
         value = parseInt(value);
     }
-
-    if (paramName === 'streetCount') streetCount = value;
-    if (paramName === 'avenueCount') avenueCount = value;
-    if (paramName === 'streetWidth') streetWidth = value;
-    if (paramName === 'blockParcelCount') blockParcelCount = value;
-    if (paramName === 'parcelWidth') parcelWidth = value;
-    if (paramName === 'parcelDepth') parcelDepth = value;
-    if (paramName === 'res') res = value;
-
-    console.log(paramName + ": ", value);
+    currentParams[paramName] = value;
     needUpdate = true;
-
-    // Update the label with the new value
+    
     const labelIndex = params.findIndex(param => param.name === paramName);
     if (labelIndex !== -1) {
         labelElements[labelIndex].html(capitalizeFirstLetter(paramName) + ': ' + value);
     }
+    ({  streetCount, avenueCount, streetWidth, blockParcelCount, parcelWidth, parcelDepth, res, parkEdges, parkContinue, needUpdate, squareEdges, broadway} = currentParams);
 }
 
 function capitalizeFirstLetter(string) {
@@ -140,13 +122,13 @@ function buttons() {
 
     buttonData.forEach((button) => {
         const x = button.gridPosition.i * buttonWidth;
-        const y = height + 60 + button.gridPosition.j * buttonLineHeight; // Adjust the base y-position as needed
+        const y = height + 90 + button.gridPosition.j * buttonLineHeight;
 
         const btn = createButton(button.label);
         btn.position(x, y);
-        btn.size(buttonWidth - 5, buttonHeight); // -5 for some padding
+        btn.size(buttonWidth - 5, buttonHeight);
         btn.mousePressed(button.mousePressed);
-        buttonList.push(btn); 
+        buttonList.push(btn);
     });
 }
 
@@ -188,19 +170,27 @@ function removeButtonsAndInputsIfThereAre(){
     inputElements = [];  // Clear the input list
 }
 
+function setSceneInDropdown(sceneName) {
+    sceneSelect.selected(sceneName); // using selected() function if it's p5.js
+}
+
 function changeScene(sceneName) {
     const scene = scenes[sceneName];
     if (scene) {
-        streetCount = scene.streetCount;
-        avenueCount = scene.avenueCount;
-        streetWidth = scene.streetWidth;
-        blockParcelCount = scene.blockParcelCount;
-        parcelWidth = scene.parcelWidth;
-        parcelDepth = scene.parcelDepth;
-        res = scene.res;
+        currentParams = scene;
+        updateGlobalParametersFromCurrent();
         needUpdate = true;
+
+        setSceneInDropdown(sceneName); // Update the dropdown value
+
         console.log(`Switched to ${sceneName} scene`);
     } else {
         console.log(`Scene ${sceneName} not found`);
     }
 }
+
+
+function updateGlobalParametersFromCurrent() {
+    ({ streetCount, avenueCount, streetWidth, blockParcelCount, parcelWidth, parcelDepth, res, parkEdges, parkContinue, needUpdate, squareEdges, broadway } = currentParams);
+}
+

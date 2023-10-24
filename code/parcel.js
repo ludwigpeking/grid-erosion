@@ -114,47 +114,60 @@ class Parcel {
 
 function layParcels() {
   const parks = [];
-  let currentScene = scenes.newYork;
+  const parkAvenueStart = Math.floor(avenueCount * parkEdges[0]) + parkEdges[1];
+  const parkAvenueEnd = Math.floor(avenueCount * parkEdges[2]) + parkEdges[3];
+  const parkStreetStart = Math.floor(streetCount * parkEdges[4]) + parkEdges[5];
+  const parkStreetEnd = Math.floor(streetCount * parkEdges[6]) + parkEdges[7];
+  const squareStart = Math.floor(avenueCount * squareEdges[0]) + squareEdges[1];
+  const squareEnd = Math.floor(avenueCount * squareEdges[2]) + squareEdges[3];
+  const squareNorth = Math.floor(streetCount * squareEdges[4]) + squareEdges[5];
+  const squareSouth = Math.floor(streetCount * squareEdges[6]) + squareEdges[7];
 
-  const parkEdges = currentScene.parkEdges;
-    const squareEdges = currentScene.squareEdges;
 
-    const parkAvenueStart = Math.floor(currentScene.avenueCount * parkEdges[0]) + parkEdges[1];
-    const parkStreetStart = Math.floor(currentScene.streetCount * parkEdges[2]) + parkEdges[3];
-    const parkAvenueEnd = Math.ceil(currentScene.avenueCount * parkEdges[4]) + parkEdges[5];
-    const parkStreetEnd = Math.floor(currentScene.streetCount * parkEdges[6]) + parkEdges[7];
+  console.log(currentParams)
+  console.log(parkAvenueStart, parkAvenueEnd, parkStreetStart, parkStreetEnd)
+  console.log(squareStart, squareEnd, squareNorth, squareSouth)
+  //park boundary calculation
+  let parkWest = parkAvenueStart * streetWidth + (parkAvenueStart - 1) * blockParcelCount * parcelWidth;
+  let parkEast = parkAvenueEnd * streetWidth - streetWidth + (parkAvenueEnd - 1) * blockParcelCount * parcelWidth;
+  let parkNorth = parkStreetStart * streetWidth + (parkStreetStart - 1) * 2 * parcelDepth;
+  let parkSouth = parkStreetEnd * streetWidth - streetWidth + (parkStreetEnd - 1) * 2 * parcelDepth;
+  
+  for (let i = parkWest; i < parkEast; i++) {
+    for (let j = parkNorth; j < parkSouth; j++) {
+      grid[i][j].park = true;
+      grid[i][j].wall = true;
+      
+    }
+  }
+  
 
 
   for (let i = 1; i < avenueCount; i++) {
     for (let j = 1; j < streetCount; j++) {
       // Check if the current blocks should be a park, based on the conditions
-      if (i > parkAvenueStart && i < parkAvenueEnd && j > parkStreetStart && j < parkStreetEnd) {
-        // Create the park tiles here and add them to the parks array or mark them differently
-        let parkTile = new Parcel(
-          i * streetWidth + 
-          (i - 1) * blockParcelCount * parcelWidth,
-          j * streetWidth + 
-          (j - 1) * 2 * parcelDepth
-        );
-        parkTile.isPark = true; // Marking the tile as park
-        parkTile.wall = true;   // Making the park non-traversable
-        parks.push(parkTile);
+      if (i >= parkAvenueStart && i < parkAvenueEnd && j >= parkStreetStart && j < parkStreetEnd) {
         continue;
-      }
+      } else if ( i >= squareStart && i < squareEnd && j >= squareNorth && j < squareSouth) {      
+        continue;
+      } else {
+        
 
-      for (let n = 0; n < 2; n++) {
-        for (let k = 1; k <= blockParcelCount; k++) {
-          let parcel = new Parcel(
-            i * streetWidth +
-            (i - 1) * blockParcelCount * parcelWidth +
-            (k - 1) * parcelWidth,
-            j * streetWidth +
-            (j - 1) * 2 * parcelDepth +
-            n * parcelDepth
-          );
 
-          parcels.push(parcel);
-          parcel.originalClaim();
+        for (let n = 0; n < 2; n++) {
+          for (let k = 1; k <= blockParcelCount; k++) {
+            let parcel = new Parcel(
+              i * streetWidth +
+              (i - 1) * blockParcelCount * parcelWidth +
+              (k - 1) * parcelWidth,
+              j * streetWidth +
+              (j - 1) * 2 * parcelDepth +
+              n * parcelDepth
+            );
+  
+            parcels.push(parcel);
+            parcel.originalClaim();
+          }
         }
       }
     }
