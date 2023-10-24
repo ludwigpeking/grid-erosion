@@ -61,7 +61,7 @@ function setup() {
   }
   gridMap = creategridMap(parcels, cellSize);
   console.log(gridMap)
-  
+  changeScene('newYork');
   
 }
 

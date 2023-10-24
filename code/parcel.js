@@ -43,7 +43,7 @@ class Parcel {
   //   rect(this.center.i * res, this.center.j * res, res, res);
   // }
   
-  checkFrontage() {
+  checkFrontage() { 
     for (let tile of this.tiles) {
       checkNeighbors(tile);
     }
@@ -76,8 +76,14 @@ class Parcel {
     this.checkAccessPoint();
   }
 
+  update(){
+    this.checkCenter();
+    this.checkFrontage();
+    this.checkAccessPoint();
+  }
+
 //a parcel claims a vacant tile adjacent to the parcel and of low traffic value smaller than 2. put the tile into the parcel's tiles array, and change the tile's owner to the parcel. draw the tile with the parcel's color. recalculates the parcel's center and access point.
-  claimOneTile() {
+  claimOneTile() { //TODO:this claim has not considered prosperity is therefore not polished
     let vacantTiles = [];
     for (let tile of this.tiles) {
       for (let neighbor of tile.neighbors) {
@@ -107,18 +113,45 @@ class Parcel {
 }
 
 function layParcels() {
+  const parks = [];
+  let currentScene = scenes.newYork;
+
+  const parkEdges = currentScene.parkEdges;
+    const squareEdges = currentScene.squareEdges;
+
+    const parkAvenueStart = Math.floor(currentScene.avenueCount * parkEdges[0]) + parkEdges[1];
+    const parkStreetStart = Math.floor(currentScene.streetCount * parkEdges[2]) + parkEdges[3];
+    const parkAvenueEnd = Math.ceil(currentScene.avenueCount * parkEdges[4]) + parkEdges[5];
+    const parkStreetEnd = Math.floor(currentScene.streetCount * parkEdges[6]) + parkEdges[7];
+
+
   for (let i = 1; i < avenueCount; i++) {
     for (let j = 1; j < streetCount; j++) {
+      // Check if the current blocks should be a park, based on the conditions
+      if (i > parkAvenueStart && i < parkAvenueEnd && j > parkStreetStart && j < parkStreetEnd) {
+        // Create the park tiles here and add them to the parks array or mark them differently
+        let parkTile = new Parcel(
+          i * streetWidth + 
+          (i - 1) * blockParcelCount * parcelWidth,
+          j * streetWidth + 
+          (j - 1) * 2 * parcelDepth
+        );
+        parkTile.isPark = true; // Marking the tile as park
+        parkTile.wall = true;   // Making the park non-traversable
+        parks.push(parkTile);
+        continue;
+      }
+
       for (let n = 0; n < 2; n++) {
         for (let k = 1; k <= blockParcelCount; k++) {
-          let parcel = new Parcel( i * streetWidth + 
+          let parcel = new Parcel(
+            i * streetWidth +
             (i - 1) * blockParcelCount * parcelWidth +
             (k - 1) * parcelWidth,
             j * streetWidth +
             (j - 1) * 2 * parcelDepth +
-            n * parcelDepth)
-            
-            
+            n * parcelDepth
+          );
 
           parcels.push(parcel);
           parcel.originalClaim();
@@ -126,6 +159,34 @@ function layParcels() {
       }
     }
   }
+
+//   for (let avenue = 0; avenue < currentScene.avenueCount; avenue++) {
+//     for (let street = 0; street < currentScene.streetCount; street++) {
+
+//         let x = ((currentScene.streetCount - street) * currentScene.streetWidth + 
+//                 (currentScene.streetCount - street - 1) * currentScene.blockParcelCount * currentScene.parcelWidth) * currentScene.res;
+
+//         let y = ((currentScene.avenueCount - avenue) * currentScene.streetWidth + 
+//                 (currentScene.avenueCount - avenue - 1) * 2 * currentScene.parcelDepth) * currentScene.res;
+
+//         if (avenue >= parkAvenueStart && avenue <= parkAvenueEnd && street >= parkStreetStart && street <= parkStreetEnd) {
+//             parks.push(new Tile(x, y, true));
+//         } else if (currentScene.squareEdges && avenue >= squareEdges[0] && avenue <= squareEdges[2] && 
+//                    street >= squareEdges[1] && street <= squareEdges[3]) {
+//             // This is a square tile, if squareEdges are defined
+//             parks.push(new Tile(x, y, true));  
+//         } else {
+//             // Normal parcel creation here
+//         }
+//     }
+// }
+  
+  // Drawing the park tiles as green spaces, add this to your drawing function
+  parks.forEach(parkTile => {
+    fill(0, 255, 0); // Green color for the park
+    noStroke();
+    rect(parkTile.x * res, parkTile.y * res, res, res); // Adjust as needed
+  });
 }
 
 //extend class parcel that is not created by the args,but by (i, j), also do not add the 2D array of tiles to its tiles property. only add tiles[i][j]

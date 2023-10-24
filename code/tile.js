@@ -1,7 +1,7 @@
 const openSpace = {};
 
 class Tile {
-  constructor(i, j) {
+  constructor(i, j, park = false) {
     this.i = i;
     this.j = j;
     this.x = i *res + res/2;
@@ -13,6 +13,7 @@ class Tile {
     
     this.wall = false;
     this.traffic = 0;
+    this.park = park;
 
     this.frontageIndex = 0;
     

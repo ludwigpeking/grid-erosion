@@ -5,6 +5,7 @@ let inputElements = [];
 let labelElements = []; 
 
 
+let sceneSelect;
 const params = [
     {name: 'streetCount', type: 'int'},
     {name: 'avenueCount', type: 'int'},
@@ -32,6 +33,15 @@ function inputs() {
     labelElements.forEach(label => label.remove());
     inputElements = [];
     labelElements = [];
+
+    const sceneSelect = createSelect();
+    sceneSelect.position(params.length * 100, height + 30); // Adjust position as needed
+    for (const scene in scenes) {
+        sceneSelect.option(scene);
+    }
+    sceneSelect.changed(() => changeScene(sceneSelect.value()));
+    inputElements.push(sceneSelect); // To ensure it gets removed and updated like other inputs
+
 
     inputElements = params.map((param, index) => {
         const label = createElement('label', capitalizeFirstLetter(param.name) )
@@ -107,16 +117,14 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-
-
 function buttons() {
     const buttonHeight = 40;
     const buttonLineHeight = 45;
     const buttonWidth = 150;
     const buttonData = [
-        { label: '1 Path!', gridPosition: {i: 0, j: 0}, mousePressed: generatRandomTraffic },
-        { label: '100 Path!', gridPosition: {i: 1, j: 0}, mousePressed: generatRandomTraffic100 },
-        { label: '1000 Path!', gridPosition: {i: 2, j: 0}, mousePressed: generatRandomTraffic1000 },
+        { label: '1 Path!', gridPosition: {i: 0, j: 0}, mousePressed: generateRandomTraffic },
+        { label: '100 Path!', gridPosition: {i: 1, j: 0}, mousePressed: generateRandomTraffic100 },
+        { label: '1000 Path!', gridPosition: {i: 2, j: 0}, mousePressed: generateRandomTraffic1000 },
         { label: 'redraw parcel prosperity', gridPosition: {i: 0, j: 1}, mousePressed: redrawTheParcelsProsperity },
         { label: 'Destroy random parcels', gridPosition: {i: 1, j: 1}, mousePressed: destroyRandomParcels },
         { label: 'Destroy low prosperity parcels', gridPosition: {i: 2, j: 1}, mousePressed: destoryParcelsLowProsper },
@@ -143,7 +151,7 @@ function buttons() {
 }
 
 
-function generatRandomTraffic() {
+function generateRandomTraffic() {
     let start = weightedRandom(parcels, "prosperity").accessPoint;
     let end = weightedRandom(parcels, "prosperity").accessPoint;
     fill(255, 0, 0);
@@ -151,12 +159,12 @@ function generatRandomTraffic() {
     rect(end.i * res, end.j * res, res, res);
     pathfindingKnightMove(start, end);
 }
-function generatRandomTraffic1000() {
-    for(let i = 0 ; i<1000; i++)generatRandomTraffic()
+function generateRandomTraffic1000() {
+    for(let i = 0 ; i<1000; i++)generateRandomTraffic()
 }
 
-function generatRandomTraffic100() {
-    for(let i = 0 ; i<100; i++)generatRandomTraffic()
+function generateRandomTraffic100() {
+    for(let i = 0 ; i<100; i++)generateRandomTraffic()
 }
 function redrawTheParcelsProsperity(){
     for(const parcel of parcels){
@@ -178,4 +186,21 @@ function removeButtonsAndInputsIfThereAre(){
         input.remove();
     }
     inputElements = [];  // Clear the input list
+}
+
+function changeScene(sceneName) {
+    const scene = scenes[sceneName];
+    if (scene) {
+        streetCount = scene.streetCount;
+        avenueCount = scene.avenueCount;
+        streetWidth = scene.streetWidth;
+        blockParcelCount = scene.blockParcelCount;
+        parcelWidth = scene.parcelWidth;
+        parcelDepth = scene.parcelDepth;
+        res = scene.res;
+        needUpdate = true;
+        console.log(`Switched to ${sceneName} scene`);
+    } else {
+        console.log(`Scene ${sceneName} not found`);
+    }
 }
