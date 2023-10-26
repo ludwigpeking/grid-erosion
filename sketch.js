@@ -1,4 +1,3 @@
-
 //scenes
 const scenes = {
   newYork : {
@@ -13,7 +12,7 @@ const scenes = {
     parkEdges: [1/3,0, 2/3,0, 0,1, 1/3,1], //left, right, top, bottom
     parkContinue: true,
     squareEdges: [0,0,0,0,0,0,0,0],  
-    broadway: [[1/3,0],[1/3,0],[2/3,0],[1,0]],
+    broadway: [1/3,0,2/3,0,1/3,1,1,1],
   
   },
   portland : {
@@ -49,24 +48,27 @@ let {streetCount, avenueCount, streetWidth, blockParcelCount, parcelWidth, parce
 needUpdate = false;
 let selectedScene = Object.keys(scenes)[0];
 
-let parcels = [];
+let parcels, parcelsVacant , parcelsClaimed = [];
 let grid = [];
 let tiles = [];
 
 var gridMap; //parcel 
-let D = res * 0.6; //influence diameter
+// let influenceDiameter = res * 0.6; //influence diameter
+let influenceDiameter = res * streetWidth
 let cellSize ;
 let cols ;
 let rows ;
 
 function setup() {
+  
   parcels = [];
   grid = [];
   tiles = [];
-  cellSize = Math.ceil(D * 2);
+  cellSize = Math.ceil(influenceDiameter * 2);
   cols =  avenueCount * streetWidth +   (avenueCount - 1) * blockParcelCount * parcelWidth;
   rows = streetCount * streetWidth + (streetCount - 1) * 2 * parcelDepth;
   createCanvas(cols * res, rows * res);
+  textLayer = createGraphics(cols * res, rows * res);
   background(120);
   openSpace.color = color(120);
   //remove old buttons if there are any
@@ -81,15 +83,12 @@ function setup() {
       tiles.push(grid[i][j]);
     }
   }
-  for (let tile of tiles){
-     tile.addNeighbors();
-  }
 
   layParcels();
-  // console.log("Parcels: ", parcels.length, " Tiles: ",tiles.length)
   
   for (let tile of tiles){
-    checkNeighbors(tile);
+    tile.addNeighbors();
+    checkNeighbors(tile); //check if the tile is a street frontage or on fence
     tile.show();
   }
   
@@ -98,9 +97,10 @@ function setup() {
     // parcel.showCenter();
     parcel.checkAccessPoint();
   }
+
+  // rect(0,0,cols * res, rows * res);
   gridMap = creategridMap(parcels, cellSize);
   // console.log(gridMap)
-  
 }
 
 function draw() {
@@ -108,6 +108,19 @@ function draw() {
       redrawCanvas();
       needUpdate = false;
   }
+  redrawTheParcelsProsperity();
+  // for (let route of routes){
+  //   drawARoute(route);
+  // }
+  // textLayer.noStroke();
+  // textLayer.fill(0,0,255);
+  // textLayer.textSize(6);
+  // for (let parcel of parcels){
+  //   textLayer.text(parcel.prosperity, parcel.center.i * res - res/2 , parcel.center.j * res -res/2 );
+  // }
+
+  // image(textLayer,0,0);
+  // textLayer.clear();
 }
 
 function redrawCanvas() {
@@ -118,7 +131,7 @@ function redrawCanvas() {
   tiles = [];
 
   // Recalculate cols and rows based on updated values
-  cellSize = Math.ceil(D * 2);
+  cellSize = Math.ceil(influenceDiameter * 2);
   cols = avenueCount * streetWidth + (avenueCount - 1) * blockParcelCount * parcelWidth;
   rows = streetCount * streetWidth + (streetCount - 1) * 2 * parcelDepth;
   resizeCanvas(cols * res, rows * res);

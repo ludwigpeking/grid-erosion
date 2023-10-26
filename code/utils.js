@@ -40,15 +40,15 @@ function creategridMap(parcels, cellSize) {
 }
 
 // Find the influenced parcels using the gridMap
-function findInfluencedParcels(route, gridMap, D, cellSize) {
+function findInfluencedParcels(route, gridMap, influenceDiameter, cellSize) {
   const influencedParcels = new Set();
-  const squaredD = D * D;
+  const squaredD = influenceDiameter * influenceDiameter;
 
   for (const tile of route) {
-    const minI = Math.floor((tile.i - D) / cellSize);
-    const maxI = Math.floor((tile.i + D) / cellSize);
-    const minJ = Math.floor((tile.j - D) / cellSize);
-    const maxJ = Math.floor((tile.j + D) / cellSize);
+    const minI = Math.floor((tile.i - influenceDiameter) / cellSize);
+    const maxI = Math.floor((tile.i + influenceDiameter) / cellSize);
+    const minJ = Math.floor((tile.j - influenceDiameter) / cellSize);
+    const maxJ = Math.floor((tile.j + influenceDiameter) / cellSize);
 
     for (let i = minI; i <= maxI; i++) {
       for (let j = minJ; j <= maxJ; j++) {
@@ -136,31 +136,58 @@ function pathfindingKnightMove(start, end) {
 
     while (previous.from != null) {
       route.push(previous);
+      //check if knight move
+      if (abs(previous.i - previous.from.i) + abs(previous.j - previous.from.j) === 3) {
+          // the two tiles in between's traffic also increases 0.5
+          let di = previous.i - previous.from.i;
+          let dj = previous.j - previous.from.j;
+  
+          let midTile1, midTile2;
+  
+          if (abs(di) == 2) { // Moved 2 tiles in i direction
+              midTile1 = grid[previous.from.i + sign(di)][previous.from.j];
+              midTile2 = grid[previous.from.i + 2*sign(di)][previous.from.j + sign(dj)];
+          } else { // Moved 2 tiles in j direction
+              midTile1 = grid[previous.from.i][previous.from.j + sign(dj)];
+              midTile2 = grid[previous.from.i + sign(di)][previous.from.j + 2*sign(dj)];
+          }
+  
+          midTile1.traffic += 0.5;
+          midTile2.traffic += 0.5;
+      }
       previous = previous.from;
       previous.traffic++;
-    }
+  }
     route.push(start);
     routes.push(route);
 
-    colorMode(RGB);
-    beginShape();
-    noFill();
-
-    strokeWeight(res / 2);
-    stroke(255, 0, 0, 50);
-    // stroke(255,100)
-    vertex(route[0].x, route[0].y);
-    for (let step = 0; step < route.length; step++) {
-      curveVertex(route[step].x, route[step].y);
-    }
-
-    vertex(route[route.length - 1].x, route[route.length - 1].y);
-    endShape();
+    drawARoute(route);
   }
   routesNr++;
 
   gridMap = creategridMap(parcels, cellSize);
-  const influencedParcels = findInfluencedParcels(route, gridMap, D, cellSize);
+  const influencedParcels = findInfluencedParcels(route, gridMap, influenceDiameter, cellSize);
+}
+
+function sign(x) {
+  return (x > 0) - (x < 0);
+}
+
+function drawARoute(route){
+  colorMode(RGB);
+  beginShape();
+  noFill();
+
+  strokeWeight(res/2);
+  stroke(255, 150, 0, 50);
+  // stroke(255,100)
+  vertex(route[0].x, route[0].y);
+  for (let step = 0; step < route.length; step++) {
+    curveVertex(route[step].x, route[step].y);
+  }
+
+  vertex(route[route.length - 1].x, route[route.length - 1].y);
+  endShape();
 }
 
 function isWallInBetween(tile1, tile2) {
@@ -237,15 +264,15 @@ function creategridMap(parcels, cellSize) {
 }
 
 // Find the influenced parcels using the gridMap
-function findInfluencedParcels(route, gridMap, D, cellSize) {
+function findInfluencedParcels(route, gridMap, influenceDiameter, cellSize) {
   const influencedParcels = new Set();
-  const squaredD = D * D;
+  const squaredD = influenceDiameter * influenceDiameter;
 
   for (const tile of route) {
-    const minI = Math.floor((tile.i - D) / cellSize);
-    const maxI = Math.floor((tile.i + D) / cellSize);
-    const minJ = Math.floor((tile.j - D) / cellSize);
-    const maxJ = Math.floor((tile.j + D) / cellSize);
+    const minI = Math.floor((tile.i - influenceDiameter) / cellSize);
+    const maxI = Math.floor((tile.i + influenceDiameter) / cellSize);
+    const minJ = Math.floor((tile.j - influenceDiameter) / cellSize);
+    const maxJ = Math.floor((tile.j + influenceDiameter) / cellSize);
 
     for (let i = minI; i <= maxI; i++) {
       for (let j = minJ; j <= maxJ; j++) {

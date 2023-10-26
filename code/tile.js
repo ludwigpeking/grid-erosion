@@ -1,4 +1,5 @@
 const openSpace = {};
+const park = {};
 
 class Tile {
   constructor(i, j, park = false) {
@@ -97,3 +98,11 @@ function tileReset() {
   }
 }
 
+function redrawPark() {
+  for (let tile of tiles) {
+    if (tile.park) {
+      tile.owner = openSpace;
+      tile.show();
+    }
+  }
+}

@@ -104,19 +104,22 @@ function buttons() {
     const buttonLineHeight = 45;
     const buttonWidth = 150;
     const buttonData = [
-        { label: '1 Path!', gridPosition: {i: 0, j: 0}, mousePressed: generateRandomTraffic },
-        { label: '100 Path!', gridPosition: {i: 1, j: 0}, mousePressed: generateRandomTraffic100 },
-        { label: '1000 Path!', gridPosition: {i: 2, j: 0}, mousePressed: generateRandomTraffic1000 },
-        { label: 'redraw parcel prosperity', gridPosition: {i: 0, j: 1}, mousePressed: redrawTheParcelsProsperity },
-        { label: 'Destroy random parcels', gridPosition: {i: 1, j: 1}, mousePressed: destroyRandomParcels },
-        { label: 'Destroy low prosperity parcels', gridPosition: {i: 2, j: 1}, mousePressed: destoryParcelsLowProsper },
-        { label: 'Reduce prosperity of all parcels by 50%', gridPosition: {i: 3, j: 1}, mousePressed: destoryParcelsHalfProsper },
-        { label: 'Spawn a parcel', gridPosition: {i: 0, j: 2}, mousePressed: spawnOneParcel },
-        { label: 'Claim a tile', gridPosition: {i: 1, j: 2}, mousePressed: parcelClaimOneTile },
-        { label: 'traffic decline', gridPosition: {i: 2, j: 2}, mousePressed: trafficDecline },
-        { label: 'show traffic', gridPosition: {i: 3, j: 2}, mousePressed: showTraffic },
-        { label: 'Traffic Clear', gridPosition: {i: 3, j: 0}, mousePressed: trafficClear },
-        { label: 'Reset to Default Parameters', gridPosition: {i: 0, j: 3}, mousePressed: resetParameters }
+        { label: 'Traffic!', gridPosition: {i: 0, j: 0}, mousePressed: generateRandomTraffic10 },
+        { label: 'More Traffic!', gridPosition: {i: 1, j: 0}, mousePressed: generateRandomTraffic100 },
+        { label: 'Lot More Traffic!', gridPosition: {i: 2, j: 0}, mousePressed: generateRandomTraffic300 },
+        { label: 'Show Parcel Prosperity', gridPosition: {i: 3, j: 0}, mousePressed: redrawTheParcelsProsperity },
+
+        { label: 'Destroy 20% Random Parcels', gridPosition: {i: 0, j: 1}, mousePressed: destroyRandomParcels },
+        { label: 'Destroy 20% Low Prosperity Parcels', gridPosition: {i: 1, j: 1}, mousePressed: destoryParcelsLowProsper },
+        { label: 'Reduce Prosperity of All Parcels by 50%', gridPosition: {i: 2, j: 1}, mousePressed: destoryParcelsHalfProsper },
+        { label: 'Traffic Decline 50%', gridPosition: {i: 3, j: 1}, mousePressed: trafficDecline },
+
+        { label: 'Make an Informal Parcel', gridPosition: {i: 0, j: 2}, mousePressed: spawnOneParcel },
+        { label: 'Claim a Tile', gridPosition: {i: 1, j: 2}, mousePressed: parcelClaimOneTile },
+
+        { label: 'Traffic Clear', gridPosition: {i: 0, j: 3}, mousePressed: trafficClear },
+        { label: 'Reset to Default Parameters', gridPosition: {i: 1, j: 3}, mousePressed: resetParameters },
+        { label: 'show traffic', gridPosition: {i: 2, j: 3}, mousePressed: showTraffic }
     ];
     
 
@@ -132,17 +135,21 @@ function buttons() {
     });
 }
 
-
 function generateRandomTraffic() {
     let start = weightedRandom(parcels, "prosperity").accessPoint;
     let end = weightedRandom(parcels, "prosperity").accessPoint;
-    fill(255, 0, 0);
-    rect(start.i * res, start.j * res, res, res);
-    rect(end.i * res, end.j * res, res, res);
+    // fill(255, 0, 0);
+    // rect(start.i * res, start.j * res, res, res);
+    // rect(end.i * res, end.j * res, res, res);
     pathfindingKnightMove(start, end);
 }
-function generateRandomTraffic1000() {
-    for(let i = 0 ; i<1000; i++)generateRandomTraffic()
+
+function generateRandomTraffic10(){
+    for(let i = 0 ; i<10; i++)generateRandomTraffic()
+}
+
+function generateRandomTraffic300() {
+    for(let i = 0 ; i<300; i++)generateRandomTraffic()
 }
 
 function generateRandomTraffic100() {
@@ -151,7 +158,7 @@ function generateRandomTraffic100() {
 function redrawTheParcelsProsperity(){
     for(const parcel of parcels){
         for(const tile of parcel.tiles){
-            fill(255,255-parcel.prosperity * 5,255-parcel.prosperity*5);
+            fill(255,255-10* sqrt(parcel.prosperity) ,255-10* sqrt(parcel.prosperity));
             noStroke();
             rect(tile.i * res, tile.j * res, res, res)
         }
