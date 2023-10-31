@@ -1,11 +1,11 @@
 # Grids - Their Traffic Patterns and Erosion
 
 **Richard Qian Li, 2023**
-
+<div style="display: flex">
 <img src="img/02.png" alt="description" width="200"/>
 <img src="img/01.png" alt="description" width="200"/>
 <img src="img/03.png" alt="description" width="200"/>
-
+</div>
 
 The study deals with two problems:
 
