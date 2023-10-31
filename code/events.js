@@ -4,27 +4,21 @@ function claimVacantParcel() {
     if(parcel.claimed === false){
       vacantParcel.push(parcel);
     }
-  }
-
-  
+  } 
 }
 //spawn a parcel on a random vacant tile belong to the open space, where tile's traffic value is smaller than 2
 function spawnOneParcel(){
-    let vacantTiles = [];
-    for(const tile of tiles){
-        if(tile.owner == openSpace && tile.traffic < 2){
-            vacantTiles.push(tile);
-        }
-    }
-    //pick a random tile from the vacant tiles
-    let randomTile = vacantTiles[Math.floor(Math.random() * vacantTiles.length)];
-    randomTile.owner = new SpawnedParcel(randomTile.i, randomTile.j);
-    parcels.push(randomTile.owner);
-    randomTile.owner.show()
-    randomTile.owner.tiles.push(randomTile);
-    randomTile.streetFront = true;
-    randomTile.frontageIndex = 0;
-
+  let highTiles = getHighTrafficTiles(round(parcels.length * 0.1));
+    for (let tile of highTiles) {
+      if (tile.owner == openSpace) {
+        tile.owner = new SpawnedParcel(tile.i, tile.j);
+        parcels.push(tile.owner);
+        tile.owner.show();
+        tile.owner.tiles.push(tile);
+        tile.streetFront = true;
+        tile.frontageIndex = 0;
+      }
+    }  
 }
 
 function parcelClaimOneTile() {
@@ -68,20 +62,39 @@ function trafficClear(){
 }
 
 function showTraffic() {
-  console.log("show traffic")
-  for (let tile of tiles) {
-    if (tile.owner == openSpace) {
-    //background color fill the tile
-    fill(120)
-    noStroke()
-    rect(tile.i * res, tile.j * res, res, res)
+  const btn = buttonList.find(b => b.html() === "Show Traffic" || b.html() === "Hide Traffic");
+  
+  if (!isTrafficShown) {
+      console.log("Showing traffic");
+      for (let tile of tiles) {
+          if (tile.owner == openSpace) {
+              //background color fill the tile
+              fill(120);
+              noStroke();
+              rect(tile.i * res, tile.j * res, res, res);
 
-    fill(255, 0, 0, tile.traffic * 50)
-    noStroke()
-    rect(tile.i * res, tile.j * res, res, res)
-    }
+              fill(255, 0, 0, tile.traffic * 50);
+              noStroke();
+              rect(tile.i * res, tile.j * res, res, res);
+          }
+      }
+      redrawPark();
+      isTrafficShown = true;
+
+      // change button label to "Hide Traffic"
+      if (btn) btn.html("Hide Traffic");
+  } else {
+      console.log("Hiding traffic");
+      for (let tile of tiles) {
+          if (tile.owner == openSpace) {
+              tile.show();  // Assuming tile.show() resets the tile's appearance
+          }
+      }
+      isTrafficShown = false;
+
+      // change button label to "Show Traffic"
+      if (btn) btn.html("Show Traffic");
   }
-  redrawPark();
 }
 
 
@@ -103,13 +116,14 @@ function destroyRandomParcels() {
 }}
 
 function destoryParcelsLowProsper(){
-  for (let i = 0; i < parcels.length; i++) {
-      if(parcels[i].prosperity  * 0.1 < Math.random()){
-          parcels.splice(i, 1);
-          //would the splice function change the index of the array and cause the loop to skip the next parcel? correct: no, because the loop will not run again until the next frame
-      }
+  //sort the parcels by prosperity descending
+  parcels.sort((a, b) => (a.prosperity > b.prosperity) ? 1 : -1)
+  //remove the parcels with low prosperity
+  for (let i = 0; i < parcels.length * 0.1; i++) {
+      parcels.splice(i, 1);
   }
   background(120)
+
   redrawParcels()
   gridMap = creategridMap(parcels, cellSize)
   refreshTileOfRemovedParcels()

@@ -3,6 +3,10 @@ let buttonList = [];
 let inputElements = []; 
 let labelElements = []; 
 let sceneSelect;
+let _sceneTitleElement ;
+let showProsperity = false;
+let isTrafficShown = false;
+
 
 
 const params = [
@@ -15,6 +19,13 @@ const params = [
     {name: 'res', type: 'int'},
 
 ];
+
+function getSceneTitleElement() {
+    if (!_sceneTitleElement) {
+        _sceneTitleElement = select('#scene-title');
+    }
+    return _sceneTitleElement;
+}
 
 function resetParameters() {
     currentParams = scenes.newYork;
@@ -31,7 +42,7 @@ function inputs() {
     labelElements = [];
 
     sceneSelect = createSelect();
-    sceneSelect.position(0, height + 5).style('padding', "5px"); // Adjust position as needed
+    sceneSelect.position(10, height + 90).style('padding', "5px"); // Adjust position as needed
     for (const scene in scenes) {
         sceneSelect.option(scene);
     }
@@ -42,18 +53,21 @@ function inputs() {
     sceneSelect.value(selectedScene);
     
     inputElements.push(sceneSelect); // To ensure it gets removed and updated like other inputs
-
+    const sceneTitle = getSceneTitleElement();
+    if (sceneTitle) {
+        sceneTitle.html(capitalizeFirstLetter (selectedScene) + " Grid").style( 'top', '10px');
+    }
 
     inputElements = params.map((param, index) => {
         const label = createElement('label', capitalizeFirstLetter(param.name) )
-            .position(index * 100, height + 40)
+            .position(index * 100+10, height + 120)
             .style('font-size', '12px');
         
         labelElements.push(label);  // Store label elements to update them later
 
         const input = createInput('')
             .value(currentParams[param.name])
-            .position(index * 100, height + 60)
+            .position(index * 100+10, height + 140)
             .size(87, 20);
 
         if (param.type === 'int') {
@@ -105,9 +119,10 @@ function buttons() {
     const buttonWidth = 150;
     const buttonData = [
         { label: 'Traffic!', gridPosition: {i: 0, j: 0}, mousePressed: generateRandomTraffic10 },
-        { label: 'More Traffic!', gridPosition: {i: 1, j: 0}, mousePressed: generateRandomTraffic100 },
-        { label: 'Lot More Traffic!', gridPosition: {i: 2, j: 0}, mousePressed: generateRandomTraffic300 },
-        { label: 'Show Parcel Prosperity', gridPosition: {i: 3, j: 0}, mousePressed: redrawTheParcelsProsperity },
+        { label: 'More Traffic!<br>(Wait a Few Secs)', gridPosition: {i: 1, j: 0}, mousePressed: generateRandomTraffic100 },
+        { label: 'Lot More Traffic! <br>(Wait a Few Secs)', gridPosition: {i: 2, j: 0}, mousePressed: generateRandomTraffic300 },
+        { label: (showProsperity ? 'Hide' : 'Show') + ' Parcel Prosperity', gridPosition: {i: 3, j: 0}, mousePressed: redrawTheParcelsProsperity },
+
 
         { label: 'Destroy 20% Random Parcels', gridPosition: {i: 0, j: 1}, mousePressed: destroyRandomParcels },
         { label: 'Destroy 20% Low Prosperity Parcels', gridPosition: {i: 1, j: 1}, mousePressed: destoryParcelsLowProsper },
@@ -119,13 +134,14 @@ function buttons() {
 
         { label: 'Traffic Clear', gridPosition: {i: 0, j: 3}, mousePressed: trafficClear },
         { label: 'Reset to Default Parameters', gridPosition: {i: 1, j: 3}, mousePressed: resetParameters },
-        { label: 'show traffic', gridPosition: {i: 2, j: 3}, mousePressed: showTraffic }
+        { label: (isTrafficShown ? 'Hide' : 'Show') + ' Traffic', gridPosition: {i: 2, j: 3}, mousePressed: showTraffic }
+
     ];
     
 
     buttonData.forEach((button) => {
-        const x = button.gridPosition.i * buttonWidth;
-        const y = height + 90 + button.gridPosition.j * buttonLineHeight;
+        const x = button.gridPosition.i * buttonWidth +10;
+        const y = height + 170 + button.gridPosition.j * buttonLineHeight;
 
         const btn = createButton(button.label);
         btn.position(x, y);
@@ -141,7 +157,7 @@ function generateRandomTraffic() {
     // fill(255, 0, 0);
     // rect(start.i * res, start.j * res, res, res);
     // rect(end.i * res, end.j * res, res, res);
-    pathfindingKnightMove(start, end);
+    pathfinding(start, end);
 }
 
 function generateRandomTraffic10(){
@@ -156,14 +172,32 @@ function generateRandomTraffic100() {
     for(let i = 0 ; i<100; i++)generateRandomTraffic()
 }
 function redrawTheParcelsProsperity(){
-    for(const parcel of parcels){
-        for(const tile of parcel.tiles){
-            fill(255,255-10* sqrt(parcel.prosperity) ,255-10* sqrt(parcel.prosperity));
-            noStroke();
-            rect(tile.i * res, tile.j * res, res, res)
+    const btn = buttonList.find(b => b.html() === "Show Parcel Prosperity" || b.html() === "Hide Parcel Prosperity");
+    
+    if (!showProsperity){
+        console.log('redrawTheParcelsProsperity');
+        for(const parcel of parcels){
+            for(const tile of parcel.tiles){
+                fill(255-10* sqrt(parcel.prosperity), 255-10* sqrt(parcel.prosperity), 255);
+                noStroke();
+                rect(tile.i * res, tile.j * res, res, res);
+            }
+        } 
+        showProsperity = true;
+
+        // change button label to "Hide Parcel Prosperity"
+        if (btn) btn.html("Hide Parcel Prosperity");
+    } else {
+        for (let tile of tiles){
+            if (parcels.includes(tile.owner))tile.show();
         }
+        showProsperity = false;
+
+        // change button label to "Show Parcel Prosperity"
+        if (btn) btn.html("Show Parcel Prosperity");
     }
 }
+
 //remove Buttons and inputs when updating parameters
 function removeButtonsAndInputsIfThereAre(){
     for (let btn of buttonList) {
@@ -183,6 +217,10 @@ function setSceneInDropdown(sceneName) {
 
 function changeScene(sceneName) {
     const scene = scenes[sceneName];
+    const sceneTitle = getSceneTitleElement();
+    if (sceneTitle) {
+        sceneTitle.html(capitalizeFirstLetter(`${sceneName}`));
+    }
     if (scene) {
         currentParams = scene;
         updateGlobalParametersFromCurrent();

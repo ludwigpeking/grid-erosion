@@ -43,6 +43,28 @@ const scenes = {
   }
 }
 
+
+document.addEventListener("DOMContentLoaded", function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const sceneName = urlParams.get('scene');
+  if (scenes[sceneName]) {
+      document.getElementById("scene-title").textContent = sceneName.charAt(0).toUpperCase() + sceneName.slice(1) + " Grid"; // To display the scene name
+      updateCurrentParams(scenes[sceneName]);
+      redrawCanvas();
+  } else {
+      console.error("Invalid scene parameter provided.");
+  }
+});
+
+
+function updateCurrentParams(params) {
+  currentParams = params;
+  ({streetCount, avenueCount, streetWidth, blockParcelCount, parcelWidth, parcelDepth, res, parkEdges, parkContinue, needUpdate, squareEdges, broadway} = currentParams);
+  needUpdate = false;
+  selectedScene = Object.keys(scenes).find(key => scenes[key] === currentParams);
+}
+
+
 let currentParams = scenes.newYork;
 let {streetCount, avenueCount, streetWidth, blockParcelCount, parcelWidth, parcelDepth, res, parkEdges, parkContinue, needUpdate, squareEdges, broadway} = currentParams;
 needUpdate = false;
@@ -54,7 +76,7 @@ let tiles = [];
 
 var gridMap; //parcel 
 // let influenceDiameter = res * 0.6; //influence diameter
-let influenceDiameter = res * streetWidth
+let influenceDiameter = res * streetWidth*2
 let cellSize ;
 let cols ;
 let rows ;
@@ -108,7 +130,7 @@ function draw() {
       redrawCanvas();
       needUpdate = false;
   }
-  redrawTheParcelsProsperity();
+  // redrawTheParcelsProsperity();
   // for (let route of routes){
   //   drawARoute(route);
   // }
@@ -170,3 +192,6 @@ function redrawCanvas() {
   // sceneSelect.value(selectedScene);
 }
 
+document.getElementById("saveCanvasBtn").addEventListener("click", function() {
+  saveCanvas('grid-erosion', 'png');
+});

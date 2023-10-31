@@ -34,7 +34,7 @@ class Parcel {
       }
     }
     this.claimed = true;
-    this.prosperity ++ ;
+    this.prosperity +=2 ;
   }
 
   checkCenter() {
@@ -70,7 +70,7 @@ class Parcel {
         nearest = d;
       }
     }
-    this.accessPoint.wall = false;
+    // this.accessPoint.wall = false;
     this.accessPoint.accessPoint = true;
     fill(0, 0, 255);
     noStroke();
@@ -108,16 +108,15 @@ class Parcel {
       let randomTile = vacantTiles[Math.floor(random(vacantTiles.length))];
       randomTile.owner = this;
       randomTile.wall = true;
-      fill(0)
-      rect( randomTile.i * res, randomTile.j * res, res, res);
+      // fill(0)
+      // rect( randomTile.i * res, randomTile.j * res, res, res);
       this.tiles.push(randomTile);
 
       for (let tile of this.tiles){
         checkNeighbors(tile);
         tile.show();
       }
-      this.checkCenter();
-      this.checkAccessPoint();
+      this.update();
     }
   }
 }
@@ -224,15 +223,15 @@ function redrawParcels(){
   for (let parcel of parcels){
     parcel.show();
   }
-  // for (let tile of tiles){
-  //   if (tile.park){
-  //     tile.show();
-  //   }
+  for (let tile of tiles){
+    if (tile.park){
+      tile.show();
+    }
   //   if (tile.owner == openSpace){
   //     tile.color = color(120);
   //     tile.show();
   //   }
-  // }
+  }
 }
 
 function getBroadwayProperties() {

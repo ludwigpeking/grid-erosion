@@ -15,7 +15,7 @@ class Tile {
     this.wall = false;
     this.traffic = 0;
     this.park = park;
-
+    
     this.frontageIndex = 0;
     
     this.f = 0;
@@ -54,6 +54,44 @@ class Tile {
     if (this.i < cols - 1 && this.j < rows - 1) 
       this.neighbors.push(grid[this.i + 1][this.j + 1]);
   }
+  surroundingTraffic() {
+    let sum = 0;
+    for (let neighbor of this.neighbors) {
+      sum += neighbor.traffic;
+    }
+    this.surroundingTraffic = sum- this.traffic;
+  }
+
+  isAdjacentToAccessPoint() {
+    for (let neighbor of this.neighbors) {
+      if (neighbor.accessPoint) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+
+  deWall() {
+    this.previousOwner = this.owner; // store current owner first
+    //remove the tile from the owner's tiles array
+    if (this.owner.tiles) {
+      let index = this.owner.tiles.indexOf(this);
+      if (index > -1) {
+        this.owner.tiles.splice(index, 1);
+      }
+    }
+    this.wall = false; 
+    this.owner = openSpace; // then change the owner to openSpace
+    // console.log("previous", this.previousOwner);
+    if (this.previousOwner.update) { // check if the update function exists
+        this.previousOwner.update();
+        // console.log("update");
+    }
+    this.show();
+}
+
+
   show() {
     if (this.park){
       this.color = color(120, 255, 180);
@@ -105,4 +143,26 @@ function redrawPark() {
       tile.show();
     }
   }
+}
+
+function getHighTrafficTiles(numberToSpawn) {
+  let allTiles = [];
+
+  // Get all tiles that are openSpace, calculate their surrounding traffic, and are not adjacent to access point
+  for (let i = 0; i < cols; i++) {
+      for (let j = 0; j < rows; j++) {
+          let tile = grid[i][j];
+          tile.surroundingTraffic(); // Update surrounding traffic value
+          
+          if (tile.owner === openSpace && !tile.isAdjacentToAccessPoint()) {
+              allTiles.push(tile);
+          }
+      }
+  }
+
+  // Sort the tiles based on surroundingTraffic in descending order
+  allTiles.sort((a, b) => b.surroundingTraffic - a.surroundingTraffic);
+
+  // Return top numberToSpawn tiles
+  return allTiles.slice(0, numberToSpawn);
 }
