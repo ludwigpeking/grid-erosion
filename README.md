@@ -2,9 +2,10 @@
 
 **Richard Qian Li, 2023**
 
-![Image](img/02.png)
-![Image](img/01.png)
-![Image](img/03.png)
+<img src="img/02.png" alt="description" width="200"/>
+<img src="img/01.png" alt="description" width="200"/>
+<img src="img/03.png" alt="description" width="200"/>
+
 
 The study deals with two problems:
 
