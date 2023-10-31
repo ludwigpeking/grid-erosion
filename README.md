@@ -53,12 +53,14 @@ From the index page, users have access to the scenes and descriptions.
 - New users spawning at desirable location
 - Properties claim space from open space of no owner
 
-![Image](img/06.png)
-![Image](img/07.png)
-![Image](img/08.png)
-![Image](img/09.png)
-![Image](img/10.png)
-![Image](img/11.png)
+<div style="display: flex">
+<img src="img/06.png" alt="description" width="200"/>
+<img src="img/07.png" alt="description" width="200"/>
+<img src="img/08.png" alt="description" width="200"/>
+<img src="img/09.png" alt="description" width="200"/>
+<img src="img/10.png" alt="description" width="200"/>
+<img src="img/11.png" alt="description" width="200"/>
+</div>
 
 ### The Author
 
