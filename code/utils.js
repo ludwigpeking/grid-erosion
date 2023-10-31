@@ -12,114 +12,8 @@ function weightedRandom(arr, weightAttribute) {
   }
 }
 
-
-
-
 let routes = [];
 let routesNr = 0;
-
-// function pathfinding(start, end) {
-//   let closeSet = [];
-//   tileReset();
-//   start.g = 0;
-//   let openSet = [];
-//   openSet.push(start);
-//   let current = start;
-//   let route = [];
-
-//   while (current != end) {
-//       if (openSet.length === 0) {
-//           console.log("No valid path found");
-//           return;
-//       }
-//       openSet.sort((a, b) => (a.f > b.f ? 1 : -1));
-//       current = openSet[0];
-//       closeSet.push(current);
-//       openSet.splice(0, 1);
-//       let neighbors = current.neighbors.slice();
-//       let knightMoves = [
-//           {i: 2, j: 1},
-//           {i: 1, j: 2},
-//           {i: -2, j: -1},
-//           {i: -1, j: -2},
-//           {i: 2, j: -1},
-//           {i: 1, j: -2},
-//           {i: -2, j: 1},
-//           {i: -1, j: 2},
-//       ];
-
-//       for (let move of knightMoves) {
-//         let ni = current.i + move.i;
-//         let nj = current.j + move.j;
-  
-//         if (ni >= 0 && nj >= 0 && ni < cols && nj < rows) {
-//           neighbors.push(grid[ni][nj]);
-//         }
-//       }
-
-//       for (let neighbor of neighbors) {
-//         if (closeSet.includes(neighbor) === false && neighbor.wall === false &&
-//             !isWallInBetween(current, neighbor)) {
-          
-//           neighbor.h = dist(neighbor.i, neighbor.j, end.i, end.j);
-//           let g = current.g + dist(neighbor.i, neighbor.j, current.i, current.j);
-  
-//                   if (g < neighbor.g) {
-//                       neighbor.from = current;
-//                       neighbor.g = g;
-//                       neighbor.f = neighbor.g + neighbor.h;
-//                   }
-
-//                   if (openSet.includes(neighbor) == false) {
-//                       openSet.push(neighbor);
-//                   }
-//               }
-//           }
-//       }
-//     if (current == end) {
-
-//     let previous = end;
-
-//     while (previous.from != null) {
-//       route.push(previous);
-//       //check if knight move
-//       if (abs(previous.i - previous.from.i) + abs(previous.j - previous.from.j) === 3) {
-//           // the two tiles in between's traffic also increases 0.5
-//           let di = previous.i - previous.from.i;
-//           let dj = previous.j - previous.from.j;
-  
-//           let midTile1, midTile2;
-  
-//           if (abs(di) == 2) { // Moved 2 tiles in i direction
-//               midTile1 = grid[previous.from.i + sign(di)][previous.from.j];
-//               midTile2 = grid[previous.from.i + 2*sign(di)][previous.from.j + sign(dj)];
-//           } else { // Moved 2 tiles in j direction
-//               midTile1 = grid[previous.from.i][previous.from.j + sign(dj)];
-//               midTile2 = grid[previous.from.i + sign(di)][previous.from.j + 2*sign(dj)];
-//           }
-  
-//           midTile1.traffic += 0.5;
-//           midTile2.traffic += 0.5;
-//       } else if (abs(previous.i - previous.from.i) + abs(previous.j - previous.from.j) === 2){
-//         //diagonal tile traffic increases 0.3
-//         let di = previous.i - previous.from.i;
-//         let dj = previous.j - previous.from.j;
-//         let midTile = grid[previous.from.i + sign(di)][previous.from.j + sign(dj)];
-//         midTile.traffic += 0.3;
-//       }
-//       previous = previous.from;
-//       previous.traffic++;
-//   }
-//     route.push(start);
-//     routes.push(route);
-
-//     drawARoute(route);
-//   }
-//   routesNr++;
-
-//   gridMap = creategridMap(parcels, cellSize);
-//   const influencedParcels = findInfluencedParcels(route, gridMap, influenceDiameter, cellSize);
-// }
 
 function sign(x) {
   return (x > 0) - (x < 0);
@@ -127,17 +21,14 @@ function sign(x) {
 
 function drawARoute(route){
   colorMode(RGB);
-  beginShape();
   noFill();
-
-  strokeWeight(res/2);
   stroke(255, 50, 0, 100);
-  // stroke(255,100)
+  beginShape();
+  strokeWeight(res/2);
   vertex(route[0].x, route[0].y);
   for (let step = 0; step < route.length; step++) {
     curveVertex(route[step].x, route[step].y);
   }
-
   vertex(route[route.length - 1].x, route[route.length - 1].y);
   endShape();
 }

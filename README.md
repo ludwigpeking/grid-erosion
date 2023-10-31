@@ -1,37 +1,74 @@
-# Manhattan Streets Project
+# Grids - Their Traffic Patterns and Erosion
 
-This project is a JavaScript application that generates a map of Manhattan streets. It uses data from the New York City Open Data portal to create a visualization of the street grid.
+**Richard Qian Li, 2023**
 
-## Table of Contents
-
-- [Installation and Usage](#installation)
-- [Description](#description)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Installation and Usage
-
-No installation is required. The application is hosted on GitHub Pages at https://ludwigpeking.github.io/ManhattanStreetsProject/. 
-p5*js library is used in the project. The library is included in the project. The application can be run by opening the `index.html` file in a web browser.
-from index page, the user has the access to the scenes and descriptions.
-
-## Description
+![Image](img/02.png)
+![Image](img/01.png)
+![Image](img/03.png)
 
 The study deals with two problems:
-### The Traffic Pattern in the Grids
-Firstly, it simulates the spontaneous traffic patterns emerging within the grid, the value creation and growth patterns that arise in response to the spantaneous movements of inhabitants. 
-### The Erosion of the Grids
+
+### 1. The Traffic Pattern in the Grids
+
+Firstly, it simulates the spontaneous traffic patterns emerging within the grid, the value creation and growth patterns that arise in response to the spontaneous movements of inhabitants.
+
+### 2. The Erosion of the Grids
+
 Secondly, it delves into the grid's deterioration due to factors such as economic downturns or sociopolitical upheavals, highlighting the subsequent movement reorganization. Notably, informal occupations following these disturbances play a pivotal role in reshaping the city.
 
-## Contributing
+- [New York Type](scenes.html?scene=newYork) - long blocks with variation of large park and some diagonal street.
+- [Portland Type](scenes.html?scene=portland) - square blocks with linear parks and small squares.
+- [Lucca Type](scenes.html?scene=lucca) - Roman Age camp city with regular blocks and some open space.
 
-The author is Richard Qian Li, an architect and urban designer who now resides in Beijing with his family. 
+### Installation and Usage
 
+No installation is required. The code is hosted on GitHub Pages at [https://github.com/ludwigpeking/grid-erosion.git/](https://github.com/ludwigpeking/grid-erosion.git/). 
+p5*js library is used in the project. The library is included in the project. The application can be run by opening the `index.html` file in a web browser.
+From the index page, users have access to the scenes and descriptions.
 
-## License
+### Parameters of the grid that can be changed in the scenes:
+
+- Street Count: Number of streets (integer)
+- Avenue Count: Number of avenues (integer)
+- Street Width: Width of the streets (integer)
+- Block Parcel Count: Number of parcels in a block (integer)
+- Parcel Width: Width of a parcel (integer)
+- Parcel Depth: Depth of a parcel (integer)
+- Res: the resolution or the size of the tile that affects only viewing
+
+### Growth events
+
+- Add traffic and create prosperity to the grid
+
+### Decline events
+
+- Parcels destroyed randomly
+- Parcels with low prosperity becomes vacant
+- Overall prosperity declines 
+- Overall traffic volume declines 
+
+### Claimation events - spontaneous growth after the age of turmoil
+
+- New users spawning at desirable location
+- Properties claim space from open space of no owner
+
+![Image](img/06.png)
+![Image](img/07.png)
+![Image](img/08.png)
+![Image](img/09.png)
+![Image](img/10.png)
+![Image](img/11.png)
+
+### The Author
+
+The author is Richard Qian Li, an architect and urban designer who now resides in Beijing with his family.
+Contact: ludwig.peking@gmail.com
+
+### License
 
 MIT License
-Copyright (c) [2023] [Richard Qian Li] [ludwig.peking@gmail.com]
+
+Copyright (c) 2023, Richard Qian Li.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

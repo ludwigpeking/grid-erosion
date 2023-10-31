@@ -8,9 +8,10 @@ function claimVacantParcel() {
 }
 //spawn a parcel on a random vacant tile belong to the open space, where tile's traffic value is smaller than 2
 function spawnOneParcel(){
-  let highTiles = getHighTrafficTiles(round(parcels.length * 0.1));
+  let highTiles = getHighTrafficTiles(round(parcels.length * 0.5));
+  console.log(highTiles.length);
     for (let tile of highTiles) {
-      if (tile.owner == openSpace) {
+      if (tile.owner == openSpace && random()<0.1) {
         tile.owner = new SpawnedParcel(tile.i, tile.j);
         parcels.push(tile.owner);
         tile.owner.show();
@@ -111,9 +112,8 @@ function destroyRandomParcels() {
   gridMap = creategridMap(parcels, cellSize)
   refreshTileOfRemovedParcels()
   redrawParcels();
-  for (let route of routes){
-    drawARoute(route);
-}}
+  routes = [];
+}
 
 function destoryParcelsLowProsper(){
   //sort the parcels by prosperity descending

@@ -125,12 +125,12 @@ function buttons() {
 
 
         { label: 'Destroy 20% Random Parcels', gridPosition: {i: 0, j: 1}, mousePressed: destroyRandomParcels },
-        { label: 'Destroy 20% Low Prosperity Parcels', gridPosition: {i: 1, j: 1}, mousePressed: destoryParcelsLowProsper },
+        { label: 'Destroy 10% Low Prosperity Parcels', gridPosition: {i: 1, j: 1}, mousePressed: destoryParcelsLowProsper },
         { label: 'Reduce Prosperity of All Parcels by 50%', gridPosition: {i: 2, j: 1}, mousePressed: destoryParcelsHalfProsper },
         { label: 'Traffic Decline 50%', gridPosition: {i: 3, j: 1}, mousePressed: trafficDecline },
 
-        { label: 'Make an Informal Parcel', gridPosition: {i: 0, j: 2}, mousePressed: spawnOneParcel },
-        { label: 'Claim a Tile', gridPosition: {i: 1, j: 2}, mousePressed: parcelClaimOneTile },
+        { label: 'Make Informal Parcels', gridPosition: {i: 0, j: 2}, mousePressed: spawnOneParcel },
+        { label: 'Claim Tiles', gridPosition: {i: 1, j: 2}, mousePressed: parcelClaimOneTile },
 
         { label: 'Traffic Clear', gridPosition: {i: 0, j: 3}, mousePressed: trafficClear },
         { label: 'Reset to Default Parameters', gridPosition: {i: 1, j: 3}, mousePressed: resetParameters },

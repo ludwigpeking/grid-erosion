@@ -54,7 +54,7 @@ class Tile {
     if (this.i < cols - 1 && this.j < rows - 1) 
       this.neighbors.push(grid[this.i + 1][this.j + 1]);
   }
-  surroundingTraffic() {
+  testSurroundingTraffic() {
     let sum = 0;
     for (let neighbor of this.neighbors) {
       sum += neighbor.traffic;
@@ -152,7 +152,7 @@ function getHighTrafficTiles(numberToSpawn) {
   for (let i = 0; i < cols; i++) {
       for (let j = 0; j < rows; j++) {
           let tile = grid[i][j];
-          tile.surroundingTraffic(); // Update surrounding traffic value
+          tile.testSurroundingTraffic(); // Update surrounding traffic value
           
           if (tile.owner === openSpace && !tile.isAdjacentToAccessPoint()) {
               allTiles.push(tile);
