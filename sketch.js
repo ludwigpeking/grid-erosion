@@ -1,6 +1,6 @@
 //scenes
 const scenes = {
-  newYork : {
+  newYork: {
     streetCount: 16,
     avenueCount: 6,
     streetWidth: 4,
@@ -9,13 +9,12 @@ const scenes = {
     parcelDepth: 5,
     res: 5,
     needUpdate: true,
-    parkEdges: [1/3,0, 2/3,0, 0,1, 1/3,1], //left, right, top, bottom
+    parkEdges: [1 / 3, 0, 2 / 3, 0, 0, 1, 1 / 3, 1], //left, right, top, bottom
     parkContinue: true,
-    squareEdges: [0,0,0,0,0,0,0,0],  
-    broadway: [1/3,0,2/3,0,1/3,1,1,1],
-  
+    squareEdges: [0, 0, 0, 0, 0, 0, 0, 0],
+    broadway: [1 / 3, 0, 2 / 3, 0, 1 / 3, 1, 1, 1],
   },
-  portland : {
+  portland: {
     streetCount: 12,
     avenueCount: 12,
     streetWidth: 4,
@@ -24,11 +23,11 @@ const scenes = {
     parcelDepth: 4,
     res: 5,
     needUpdate: true,
-    parkEdges: [1/3,0, 1/3,1,0,1, 1,0],
+    parkEdges: [1 / 3, 0, 1 / 3, 1, 0, 1, 1, 0],
     parkContinue: false,
-    squareEdges: [1/2,0,1/2,1,1/2,-1,1/2,0],
+    squareEdges: [1 / 2, 0, 1 / 2, 1, 1 / 2, -1, 1 / 2, 0],
   },
-  lucca : {
+  lucca: {
     streetCount: 8,
     avenueCount: 8,
     streetWidth: 3,
@@ -37,57 +36,86 @@ const scenes = {
     parcelDepth: 8,
     res: 5,
     needUpdate: true,
-    parkEdges: [0,0,0,0,0,0,0,0],
+    parkEdges: [0, 0, 0, 0, 0, 0, 0, 0],
     parkContinue: false,
-    squareEdges: [1/2,0,1/2,1,1/2,0,1/2,1],
-  }
-}
+    squareEdges: [1 / 2, 0, 1 / 2, 1, 1 / 2, 0, 1 / 2, 1],
+  },
+};
 
-
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(window.location.search);
-  const sceneName = urlParams.get('scene');
+  const sceneName = urlParams.get("scene");
   if (scenes[sceneName]) {
-      document.getElementById("scene-title").textContent = sceneName.charAt(0).toUpperCase() + sceneName.slice(1) + " Grid"; // To display the scene name
-      updateCurrentParams(scenes[sceneName]);
-      redrawCanvas();
+    document.getElementById("scene-title").textContent =
+      sceneName.charAt(0).toUpperCase() + sceneName.slice(1) + " Grid"; // To display the scene name
+    updateCurrentParams(scenes[sceneName]);
+    redrawCanvas();
   } else {
-      console.error("Invalid scene parameter provided.");
+    console.error("Invalid scene parameter provided.");
   }
 });
 
-
 function updateCurrentParams(params) {
   currentParams = params;
-  ({streetCount, avenueCount, streetWidth, blockParcelCount, parcelWidth, parcelDepth, res, parkEdges, parkContinue, needUpdate, squareEdges, broadway} = currentParams);
+  ({
+    streetCount,
+    avenueCount,
+    streetWidth,
+    blockParcelCount,
+    parcelWidth,
+    parcelDepth,
+    res,
+    parkEdges,
+    parkContinue,
+    needUpdate,
+    squareEdges,
+    broadway,
+  } = currentParams);
   needUpdate = false;
-  selectedScene = Object.keys(scenes).find(key => scenes[key] === currentParams);
+  selectedScene = Object.keys(scenes).find(
+    (key) => scenes[key] === currentParams
+  );
 }
 
-
 let currentParams = scenes.newYork;
-let {streetCount, avenueCount, streetWidth, blockParcelCount, parcelWidth, parcelDepth, res, parkEdges, parkContinue, needUpdate, squareEdges, broadway} = currentParams;
+let {
+  streetCount,
+  avenueCount,
+  streetWidth,
+  blockParcelCount,
+  parcelWidth,
+  parcelDepth,
+  res,
+  parkEdges,
+  parkContinue,
+  needUpdate,
+  squareEdges,
+  broadway,
+} = currentParams;
 needUpdate = false;
 let selectedScene = Object.keys(scenes)[0];
 
-let parcels, parcelsVacant , parcelsClaimed = [];
+let parcels,
+  parcelsVacant,
+  parcelsClaimed = [];
 let grid = [];
 let tiles = [];
 
-var gridMap; //parcel 
+var gridMap; //parcel
 // let influenceDiameter = res * 0.6; //influence diameter
-let influenceDiameter = res * streetWidth*2
-let cellSize ;
-let cols ;
-let rows ;
+let influenceDiameter = res * streetWidth * 2;
+let cellSize;
+let cols;
+let rows;
 
 function setup() {
-  
   parcels = [];
   grid = [];
   tiles = [];
   cellSize = Math.ceil(influenceDiameter * 2);
-  cols =  avenueCount * streetWidth +   (avenueCount - 1) * blockParcelCount * parcelWidth;
+  cols =
+    avenueCount * streetWidth +
+    (avenueCount - 1) * blockParcelCount * parcelWidth;
   rows = streetCount * streetWidth + (streetCount - 1) * 2 * parcelDepth;
   createCanvas(cols * res, rows * res);
   textLayer = createGraphics(cols * res, rows * res);
@@ -97,7 +125,7 @@ function setup() {
   removeButtonsAndInputsIfThereAre();
   inputs();
   buttons();
-  
+
   for (let i = 0; i < cols; i++) {
     grid.push([]);
     for (let j = 0; j < rows; j++) {
@@ -107,14 +135,14 @@ function setup() {
   }
 
   layParcels();
-  
-  for (let tile of tiles){
+
+  for (let tile of tiles) {
     tile.addNeighbors();
     checkNeighbors(tile); //check if the tile is a street frontage or on fence
     tile.show();
   }
-  
-  for (let parcel of parcels){
+
+  for (let parcel of parcels) {
     parcel.checkCenter();
     // parcel.showCenter();
     parcel.checkAccessPoint();
@@ -127,8 +155,8 @@ function setup() {
 
 function draw() {
   if (needUpdate) {
-      redrawCanvas();
-      needUpdate = false;
+    redrawCanvas();
+    needUpdate = false;
   }
   // redrawTheParcelsProsperity();
   // for (let route of routes){
@@ -154,34 +182,36 @@ function redrawCanvas() {
 
   // Recalculate cols and rows based on updated values
   cellSize = Math.ceil(influenceDiameter * 2);
-  cols = avenueCount * streetWidth + (avenueCount - 1) * blockParcelCount * parcelWidth;
+  cols =
+    avenueCount * streetWidth +
+    (avenueCount - 1) * blockParcelCount * parcelWidth;
   rows = streetCount * streetWidth + (streetCount - 1) * 2 * parcelDepth;
   resizeCanvas(cols * res, rows * res);
 
   // Reinitialize the grid and tiles
   for (let i = 0; i < cols; i++) {
-      grid.push([]);
-      for (let j = 0; j < rows; j++) {
-          grid[i][j] = new Tile(i, j);
-          tiles.push(grid[i][j]);
-      }
+    grid.push([]);
+    for (let j = 0; j < rows; j++) {
+      grid[i][j] = new Tile(i, j);
+      tiles.push(grid[i][j]);
+    }
   }
 
   for (let tile of tiles) {
-      tile.addNeighbors();
+    tile.addNeighbors();
   }
 
   layParcels();
   // console.log("Parcels: ", parcels.length, " Tiles: ", tiles.length);
 
   for (let tile of tiles) {
-      checkNeighbors(tile);
-      tile.show();
+    checkNeighbors(tile);
+    tile.show();
   }
 
   for (let parcel of parcels) {
-      parcel.checkCenter();
-      parcel.checkAccessPoint();
+    parcel.checkCenter();
+    parcel.checkAccessPoint();
   }
 
   gridMap = creategridMap(parcels, cellSize);
@@ -192,6 +222,6 @@ function redrawCanvas() {
   // sceneSelect.value(selectedScene);
 }
 
-document.getElementById("saveCanvasBtn").addEventListener("click", function() {
-  saveCanvas('grid-erosion', 'png');
+document.getElementById("saveCanvasBtn").addEventListener("click", function () {
+  saveCanvas("grid-erosion", "png");
 });
